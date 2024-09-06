@@ -22,15 +22,14 @@ You can find a diagram of the lab layout here: [OTA Lab Diagram](https://gitlab.
 The following will be deployed:
 
 - Server-class compute node (d430) with running the Open5GS 5G core network
-- Server-class compute node (d740) with GnuRadio and a fiber connection to an X310 for observing spectrum use
-- Intel NUC compute node with a B210 and srsRAN_Project for use as a gNodeB
-- Up to three other NUC compute nodes, each with a COTS 5G module and supporting tools
+- Server-class compute node (d740) with GnuRadio and a fiber connection to an X310 and srsRAN_Project for use as a gNodeB
+- Up to four NUC compute nodes, each with a COTS 5G module and supporting tools
 
 Note: This profile currently defaults to using the 3430-3470 MHz spectrum range and you need an approved reservation for this spectrum in order to use it. It's also strongly recommended that you include the following necessary resources in your reservation to gaurantee their availability at the time of your experiment:
 
 - A d430 compute node to host the core network
 - A d740 compute node for the spectrum observation node
-- At least two indoor OTA NUCs: one for the gNodeB and up to three more for COTS UEs
+- At least one indoor OTA NUCs with COTS UEs
 
 """
 
@@ -63,7 +62,7 @@ sudo tail -f /var/log/open5gs/amf.log
 In a session on `ota-nuc1-gnb-comp` do the following to start the srsRAN gNodeB:
 
 ```
-sudo /var/tmp/srsRAN_Project/build/apps/gnb/gnb -c /var/tmp/etc/srsran/gnb_rf_b200_tdd_n78_20mhz.yml
+sudo /var/tmp/srsRAN_Project/build/apps/gnb/gnb -c /var/tmp/etc/srsran/gnb_rf_x310_tdd_n78_40mhz.yml
 
 ```
 
@@ -99,15 +98,6 @@ ping <IP address from quectel-CM>
 This process may be repeated on the indoor OTA NUCs in order to attach multiple modules to the network.
 
 If the module doesn't attach to the network or pick up an IP address on the first try, put the module into airplane mode with `sudo sh -c "chat -t 1 -sv '' AT OK 'AT+CFUN=4' OK < /dev/ttyUSB2 > /dev/ttyUSB2"`, kill and restart quectel-CM, then bring the module back online. If the module still fails to associate and/or pick up an IP, try putting the module into airplane mode, rebooting the associated NUC, and bringing the module back online again. `chat` may return an error. If so, just run the command again.
-
-If you would like to monitor the spectrum of your network, and you are logging into these nodes from a machine capable of X11 forwarding, you can start an X-forwarded session to `ota-x310-1-gnuradio-comp` by passing `-X` to your SSH command, then doing:
-
-```
-uhd_fft -f3450e6 -g30 -s40e6
-```
-
-The spectrum occupancy will change as you attach UEs and pass traffic.
-
 """
 
 BIN_PATH = "/local/repository/bin"
@@ -163,6 +153,7 @@ def b210_nuc_pair(b210_node):
     node.disk_image = COTS_UE_IMG
     node.addService(rspec.Execute(shell="bash", command="/local/repository/bin/module-off.sh"))
     node.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-udhcpc-script.sh"))
+    node.addService(rspec.Execute(shell="bash", command="sudo apt install -y iperf3"))
 
 pc = portal.Context()
 
@@ -214,7 +205,7 @@ indoor_ota_x310s = [
 ]
 pc.defineParameter(
     name="x310_radio",
-    description="X310 Radio (for spectrum observation with GnuRadio)",
+    description="X310 Radio for gNodeB",
     typ=portal.ParameterType.STRING,
     defaultValue=indoor_ota_x310s[0],
     legalValues=indoor_ota_x310s
@@ -235,7 +226,7 @@ pc.defineParameter(
 pc.defineStructParameter(
     name="ue_nodes",
     description="Indoor OTA NUC with COTS UE (can't be the same as gNodeB node!)",
-    defaultValue=[{ "node_id": "ota-nuc2" }],
+    defaultValue=[{ "node_id": "ota-nuc1" }],
     multiValue=True,
     min=1,
     max=3,
@@ -290,25 +281,25 @@ cn_link.setNoBandwidthShaping()
 cn_link.addInterface(cn_if)
 cn_node.addService(rspec.Execute(shell="bash", command=OPEN5GS_DEPLOY_SCRIPT))
 
-# single x310 for for observation or another gNodeB
+# single x310 for gNodeB
 x310_node_pair(0, params.x310_radio)
 
 # using nuc1 as a gNodeB for now
-if params.srsran_commit_hash:
-    srsran_hash = params.srsran_commit_hash
-else:
-    srsran_hash = DEFAULT_SRSRAN_HASH
+#if params.srsran_commit_hash:
+#    srsran_hash = params.srsran_commit_hash
+#else:
+#    srsran_hash = DEFAULT_SRSRAN_HASH
 
-nuc_nodeb = request.RawPC("{}-gnb-comp".format(params.b210_node_gnb))
-nuc_nodeb.component_manager_id = COMP_MANAGER_ID
-nuc_nodeb.component_id = params.b210_node_gnb
-nuc_nodeb.image = COTS_UE_IMG
-node_cn_if = nuc_nodeb.addInterface("nuc-nodeb-cn-if")
-node_cn_if.addAddress(rspec.IPv4Address("192.168.1.3", "255.255.255.0"))
-cn_link.addInterface(node_cn_if)
-cmd = "{} '{}'".format(SRSRAN_DEPLOY_SCRIPT, srsran_hash)
-nuc_nodeb.addService(rspec.Execute(shell="bash", command=cmd))
-nuc_nodeb.addService(rspec.Execute(shell="bash", command="/local/repository/bin/module-off.sh"))
+# nuc_nodeb = request.RawPC("{}-gnb-comp".format(params.b210_node_gnb))
+# nuc_nodeb.component_manager_id = COMP_MANAGER_ID
+# nuc_nodeb.component_id = params.b210_node_gnb
+# nuc_nodeb.image = COTS_UE_IMG
+# node_cn_if = nuc_nodeb.addInterface("nuc-nodeb-cn-if")
+# node_cn_if.addAddress(rspec.IPv4Address("192.168.1.3", "255.255.255.0"))
+# cn_link.addInterface(node_cn_if)
+# cmd = "{} '{}'".format(SRSRAN_DEPLOY_SCRIPT, srsran_hash)
+# nuc_nodeb.addService(rspec.Execute(shell="bash", command=cmd))
+# nuc_nodeb.addService(rspec.Execute(shell="bash", command="/local/repository/bin/module-off.sh"))
 
 for ue_node in params.ue_nodes:
     b210_nuc_pair(ue_node.node_id)
