@@ -215,14 +215,6 @@ indoor_ota_nucs = [
     ("ota-nuc{}".format(i), "Indoor OTA nuc{} with B210 and COTS UE".format(i)) for i in range(1, 5)
 ]
 
-pc.defineParameter(
-    name="b210_node_gnb",
-    description="Indoor OTA NUC with B210 and srsRAN gNodeB",
-    typ=portal.ParameterType.STRING,
-    defaultValue=indoor_ota_nucs[0],
-    legalValues=indoor_ota_nucs
-)
-
 pc.defineStructParameter(
     name="ue_nodes",
     description="Indoor OTA NUC with COTS UE (can't be the same as gNodeB node!)",
