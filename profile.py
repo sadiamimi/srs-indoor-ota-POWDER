@@ -221,7 +221,7 @@ pc.defineStructParameter(
     defaultValue=[{ "node_id": "ota-nuc1" }],
     multiValue=True,
     min=1,
-    max=3,
+    max=4,
     members=[
         portal.Parameter(
             "node_id",
