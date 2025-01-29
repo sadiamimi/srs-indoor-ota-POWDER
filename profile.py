@@ -15,7 +15,7 @@ tourDescription = """
 This profile instantiates an experiment for running srsRAN_Project 5G with COTS UEs in standalone mode using resources in the POWDER indoor over-the-air (OTA) lab. The indoor OTA lab includes:
 
 - 4x NI X310 SDRs, each with a UBX-160 daughter card occupying channel 0. The TX/RX and RX2 ports on this channel are connected to broadband antennas. The SDRs are connected via fiber to near-edge compute resources.
-- 4x Intel NUC compute nodes, each equipped with a Quectel RM500Q-GL 5G module that has been provisioned with a SIM card. The NUCs are also equipped with NI B210 SDRs.
+- 4x Intel NUC compute nodes, each equipped with a Quectel RM520Q-GL 5G module that has been provisioned with a SIM card. The NUCs are also equipped with NI B210 SDRs.
 
 You can find a diagram of the lab layout here: [OTA Lab Diagram](https://gitlab.flux.utah.edu/powderrenewpublic/powder-deployment/-/raw/master/diagrams/ota-lab.png)
 
@@ -25,7 +25,7 @@ The following will be deployed:
 - Server-class compute node (d740) with GnuRadio and a fiber connection to an X310 and srsRAN_Project for use as a gNodeB
 - Up to four NUC compute nodes, each with a COTS 5G module and supporting tools
 
-Note: This profile currently defaults to using the 3430-3470 MHz spectrum range and you need an approved reservation for this spectrum in order to use it. It's also strongly recommended that you include the following necessary resources in your reservation to gaurantee their availability at the time of your experiment:
+Note: This profile currently defaults to using the 3410-3450 MHz spectrum range and you need an approved reservation for this spectrum in order to use it. It's also strongly recommended that you include the following necessary resources in your reservation to gaurantee their availability at the time of your experiment:
 
 - A d430 compute node to host the core network
 - A d740 compute node for the spectrum observation node
@@ -243,14 +243,14 @@ pc.defineStructParameter(
             "freq_min",
             "Frequency Range Min",
             portal.ParameterType.BANDWIDTH,
-            3550.0,
+            3410.0,
             longDescription="Values are rounded to the nearest kilohertz."
         ),
         portal.Parameter(
             "freq_max",
             "Frequency Range Max",
             portal.ParameterType.BANDWIDTH,
-            3600.0,
+            3450.0,
             longDescription="Values are rounded to the nearest kilohertz."
         ),
     ]
