@@ -15,7 +15,7 @@ tourDescription = """
 This profile instantiates an experiment for running srsRAN_Project 5G with COTS UEs in standalone mode using resources in the POWDER indoor over-the-air (OTA) lab. The indoor OTA lab includes:
 
 - 4x NI X310 SDRs, each with a UBX-160 daughter card occupying channel 0. The TX/RX and RX2 ports on this channel are connected to broadband antennas. The SDRs are connected via fiber to near-edge compute resources.
-- 4x Intel NUC compute nodes, each equipped with a Quectel RM520Q-GL 5G module that has been provisioned with a SIM card. The NUCs are also equipped with NI B210 SDRs.
+- 4x Intel NUC compute nodes, each equipped with a Quectel RM500Q-GL 5G module that has been provisioned with a SIM card. The NUCs are also equipped with NI B210 SDRs.
 
 You can find a diagram of the lab layout here: [OTA Lab Diagram](https://gitlab.flux.utah.edu/powderrenewpublic/powder-deployment/-/raw/master/diagrams/ota-lab.png)
 
