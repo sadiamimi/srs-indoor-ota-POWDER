@@ -159,6 +159,8 @@ pc = portal.Context()
 node_types = [
     ("d430", "Emulab, d430"),
     ("d740", "Emulab, d740"),
+    ("d760p", "Emulab, d760"),
+    ("d760-gpu", "Emulab, d760 with L40S GPU"),
 ]
 pc.defineParameter(
     name="sdr_nodetype",
