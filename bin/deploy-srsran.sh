@@ -37,7 +37,7 @@ cd srsRAN_Project
 git checkout $COMMIT_HASH
 mkdir build
 cd build
-cmake ../
+cmake -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -Wno-error=switch" ../
 make -j $(nproc)
 
 echo configuring nodeb...
