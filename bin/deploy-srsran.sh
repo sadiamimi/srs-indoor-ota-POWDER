@@ -34,7 +34,12 @@ sudo apt-get install -y \
 cd $SRCDIR
 git clone $SRS_PROJECT_REPO
 cd srsRAN_Project
-git checkout $COMMIT_HASH
+if [ ! -z "$COMMIT_HASH" ]; then
+  echo "Checking out specific commit: $COMMIT_HASH"
+  git checkout $COMMIT_HASH
+else
+  echo "Using latest version from default branch"
+fi
 mkdir build
 cd build
 cmake -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -Wno-error=switch" ../
