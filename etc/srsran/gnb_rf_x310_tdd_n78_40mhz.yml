@@ -1,8 +1,16 @@
 gnb_id: 10GNBID
 
-amf:
-  addr: 192.168.1.1
-  bind_addr: LANIP
+cu_cp:
+  amf:
+    addr: 192.168.1.1
+    bind_addr: LANIP
+    supported_tracking_areas:
+      - tac: 1
+        plmn_list:
+          - plmn: "99999"
+            tai_slice_support_list:
+              - sst: 1
+                sd: 1
 
 ru_sdr:
   device_driver: uhd
@@ -24,6 +32,8 @@ cell_cfg:
   nof_antennas_ul: 1
   plmn: "99999"
   tac: 1
+  srs:
+    srs_period_ms: 40
   pci: 3
   pdsch:
     mcs_table: qam256
@@ -41,18 +51,12 @@ cell_cfg:
     nof_ul_slots: 4
     nof_ul_symbols: 0
 
-slicing:
-  -
-    sst: 1
-    sd: 1
-
 metrics:
   autostart_stdout_metrics: true
 
 log:
   filename: /tmp/gnb.log
   all_level: warning
-  tracing_filename: /tmp/gnb-trace.log
 
 pcap:
   mac_enable: false
