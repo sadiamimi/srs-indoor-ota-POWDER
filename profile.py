@@ -211,13 +211,13 @@ pc.defineParameter(
 )
 
 indoor_ota_nucs = [
-    ("ota-nuc{}".format(i), "Indoor OTA nuc{} with B210 and COTS UE".format(i)) for i in range(1, 5)
+    ("ota-nuc{}".format(i), "Indoor OTA nuc{} with B210 and COTS UE".format(i)) for i in range(2, 5)
 ]
 
 pc.defineStructParameter(
     name="ue_nodes",
     description="Indoor OTA NUC with COTS UE (can't be the same as gNodeB node!)",
-    defaultValue=[{ "node_id": "ota-nuc1" }],
+    defaultValue=[{ "node_id": "ota-nuc2" }],
     multiValue=True,
     min=1,
     max=4,
